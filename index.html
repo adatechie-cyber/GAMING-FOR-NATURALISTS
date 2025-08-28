@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoDefender: Spain's Wildlife Guardian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+        .float-animation {
+            animation: float 4s ease-in-out infinite;
+        }
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        .nature-pattern {
+            background-image: radial-gradient(circle, rgba(16, 185, 129, 0.2) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .species-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        .species-card:hover {
+            transform: translateY(-5px) rotateX(5deg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+        .habitat-dot {
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3);
+        }
+        .map-container {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Spain_%28plus_Canarias%29_-_blank.svg/1200px-Spain_%28plus_Canarias%29_-_blank.svg.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deep: {
+                            900: '#0a1929',
+                            800: '#132f4c',
+                            700: '#1e3a8a',
+                            600: '#2563eb',
+                        },
+                        eco: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        danger: {
+                            500: '#ef4444',
+                            600: '#dc2626'
+                        },
+                        warning: {
+                            500: '#f59e0b',
+                            600: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Poppins"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-deep-900 font-sans antialiased text-gray-100">
+    <!-- Hero Section -->
+    <header class="relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/50">
+            <img src="https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1000" alt="Spanish wildlife" class="w-full h-full object-cover object-center">
+        </div>
+        
+        <div class="relative z-10 container mx-auto px-4 py-24 md:py-32">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center px-4 py-2 rounded-full backdrop-blur-sm bg-eco-800/40">
+                        <span class="h-2 w-2 rounded-full bg-eco-400 mr-2 animate-pulse"></span>
+                        <span class="text-sm font-medium">Interactive Conservation Game</span>
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-6xl font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-eco-300 to-white">
+                        EcoDefender
+                    </h1>
+                    
+                    <p class="text-xl text-eco-100 max-w-2xl mx-auto lg:mx-0">
+                        Become a guardian of Spain's most vulnerable species through immersive conservation gameplay
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
+                        <div class="inline-flex items-center px-4 py-2 rounded-full backdrop-blur-sm bg-black/30">
+                            <i class="fas fa-paw text-eco-300 mr-2"></i>
+                            <span>26 Endangered Species</span>
+                        </div>
+                        <div class="inline-flex items-center px-4 py-2 rounded-full backdrop-blur-sm bg-black/30">
+                            <i class="fas fa-tree text-eco-300 mr-2"></i>
+                            <span>12 Protected Habitats</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 pt-6 justify-center lg:justify-start">
+                        <button onclick="startGame()" class="ripple px-8 py-4 rounded-xl bg-gradient-to-r from-eco-400 to-eco-600 text-white font-bold hover:shadow-lg hover:shadow-eco-500/30 transition-all duration-300 flex items-center gap-3">
+                            <i class="fas fa-play"></i> Begin Conservation
+                        </button>
+                        <button class="px-8 py-4 rounded-xl border-2 border-eco-400 text-eco-100 hover:bg-eco-900/30 transition-all duration-300 flex items-center gap-3">
+                            <i class="fas fa-book"></i> Wildlife Database
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2 relative">
+                    <div class="absolute -inset-8 bg-gradient-to-r from-eco-600 to-eco-800 rounded-3xl -rotate-6 blur-lg opacity-40"></div>
+                    <img src="https://images.unsplash.com/photo-1574085975024-eaa85ec28107?q=80&w=1000" alt="Iberian Lynx" class="relative w-full max-w-lg rounded-3xl border-4 border-white/10 shadow-2xl float-animation">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Game Overview Section -->
+    <section class="py-20 px-4 bg-deep-800/50">
+        <div class="container mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-4xl font-bold mb-4">How You Make a Difference</h2>
+                <p class="text-lg text-eco-100">
+                    EcoDefender transforms wildlife conservation into an engaging game where your actions have real educational impact
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-b from-deep-700 to-deep-800 p-6 rounded-2xl border border-deep-600">
+                    <div class="w-16 h-16 rounded-2xl bg-eco-800/50 flex items-center justify-center text-3xl text-eco-300 mb-6">
+                        <i class="fas fa-search-location"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Habitat Mapping</h3>
+                    <p class="text-gray-300">
+                        Learn to identify and protect critical ecosystems by locating species habitats on an interactive Spain map
+                    </p>
+                </div>
+                
+                <div class="bg-gradient-to-b from-deep-700 to-deep-800 p-6 rounded-2xl border border-deep-600">
+                    <div class="w-16 h-16 rounded-2xl bg-eco-800/50 flex items-center justify-center text-3xl text-eco-300 mb-6">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Species Education</h3>
+                    <p class="text-gray-300">
+                        Comprehensive profiles teach you about conservation status, threats, and protection efforts for each species
+                    </p>
+                </div>
+                
+                <div class="bg-gradient-to-b from-deep-700 to-deep-800 p-6 rounded-2xl border border-deep-600">
+                    <div class="w-16 h-16 rounded-2xl bg-eco-800/50 flex items-center justify-center text-3xl text-eco-300 mb-6">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Achievement System</h3>
+                    <p class="text-gray-300">
+                        Earn badges and certificates as you level up your conservation knowledge and skills
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conservation Impact Section -->
+    <section class="py-20 px-4 bg-gradient-to-b from-deep-800/50 to-deep-900">
+        <div class="container mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-4xl font-bold mb-4">Conservation in Action</h2>
+                <p class="text-lg text-eco-100">
+                    Real-world initiatives you'll be supporting through gameplay and education
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="order-last lg:order-first">
+                    <div class="bg-deep-700/50 backdrop-blur-sm p-8 rounded-3xl border border-eco-900">
+                        <div class="flex items-start gap-4 mb-8">
+                            <div class="flex-shrink-0 w-12 h-12 bg-eco-700/50 rounded-xl flex items-center justify-center text-eco-300 text-xl">
+                                <i class="fas fa-paw"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Iberian Lynx Recovery</h3>
+                                <p class="text-gray-300">
+                                    Support breeding programs and rabbit population restoration in Andalusia
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4 mb-8">
+                            <div class="flex-shrink-0 w-12 h-12 bg-eco-700/50 rounded-xl flex items-center justify-center text-eco-300 text-xl">
+                                <i class="fas fa-feather-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Migratory Bird Protection</h3>
+                                <p class="text-gray-300">
+                                    Help secure Mediterranean wetlands vital for endangered migratory species
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-eco-700/50 rounded-xl flex items-center justify-center text-eco-300 text-xl">
+                                <i class="fas fa-tree"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Forest Corridors</h3>
+                                <p class="text-gray-300">
+                                    Contribute to reforestation efforts creating wildlife corridors in Cantabria
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative order-first lg:order-last">
+                    <div class="absolute top-0 left-0 w-64 h-64 bg-eco-400 rounded-full filter blur-3xl opacity-20 -z-10"></div>
+                    <div class="grid grid-cols-2 gap-6">
+                        <img src="https://images.unsplash.com/photo-1575550959106-5a7defe8b51c?q=80&w=1000" alt="Iberian Lynx" class="w-full h-64 object-cover rounded-2xl border-2 border-eco-500/50">
+                        <img src="https://images.unsplash.com/photo-1534403411656-3305abb11b14?q=80&w=1000" alt="Spanish wetlands" class="w-full h-64 object-cover rounded-2xl border-2 border-eco-500/50">
+                        <img src="https://images.unsplash.com/photo-1589652717521-10c0d092dea9?q=80&w=1000" alt="Spanish Imperial Eagle" class="w-full h-64 object-cover rounded-2xl border-2 border-eco-500/50">
+                        <img src="https://images.unsplash.com/photo-1533414108684-0d907b98a5cb?q=80&w=1000" alt="Cantabrian forest" class="w-full h-64 object-cover rounded-2xl border-2 border-eco-500/50">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Species Section -->
+    <section class="py-20 px-4 nature-pattern">
+        <div class="container mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-eco-800/50 mb-4">
+                    <i class="fas fa-star mr-2 text-eco-300"></i>
+                    Critical Species
+                </div>
+                <h2 class="text-4xl font-bold mb-4">Meet Spain's Threatened Wildlife</h2>
+                <p class="text-lg text-eco-100">
+                    Your conservation efforts will directly support these vulnerable species
+                </p>
+            </div>
+            
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Species Card 1 -->
+                <div class="species-card bg-gradient-to-b from-deep-700 to-deep-800 rounded-xl overflow-hidden border border-deep-600 hover:border-eco-500">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1575550959106-5a7defe8b51c?q=80&w=1000" alt="Iberian Lynx" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute bottom-3 right-3 px-2 py-1 rounded-full bg-danger-600/90 text-white text-xs font-bold">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> CRITICAL
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold mb-2">Iberian Lynx</h3>
+                        <p class="text-gray-300 text-sm mb-4">World's most endangered feline with only ~400 remaining in Andalusia</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-sm text-eco-300">
+                                <i class="fas fa-map-marker-alt mr-1.5"></i>
+                                <span>Andalusia</span>
+                            </div>
+                            <a href="#" class="text-sm font-medium hover:text-eco-300 flex items-center">
+                                Learn <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Species Card 2 -->
+                <div class="species-card bg-gradient-to-b from-deep-700 to-deep-800 rounded-xl overflow-hidden border border-deep-600 hover:border-eco-500">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1589652717521-10c0d092dea9?q=80&w=1000" alt="Spanish Imperial Eagle" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute bottom-3 right-3 px-2 py-1 rounded-full bg-warning-600/90 text-white text-xs font-bold">
+                            <i class="fas fa-exclamation-circle mr-1"></i> ENDANGERED
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold mb-2">Imperial Eagle</h3>
+                        <p class="text-gray-300 text-sm mb-4">Endemic raptor with only ~800 nesting pairs in central Spain</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-sm text-eco-300">
+                                <i class="fas fa-map-marker-alt mr-1.5"></i>
+                                <span>Extremadura</span>
+                            </div>
+                            <a href="#" class="text-sm font-medium hover:text-eco-300 flex items-center">
+                                Learn <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Species Card 3 -->
+                <div class="species-card bg-gradient-to-b from-deep-700 to-deep-800 rounded-xl overflow-hidden border border-deep-600 hover:border-eco-500">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1574085975024-eaa85ec28107?q=80&w=1000" alt="Cantabrian Brown Bear" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute bottom-3 right-3 px-2 py-1 rounded-full bg-warning-600/90 text-white text-xs font-bold">
+                            <i class="fas fa-exclamation-circle mr-1"></i> VULNERABLE
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold mb-2">Brown Bear</h3>
+                        <p class="text-gray-300 text-sm mb-4">Only ~300 genetically unique bears in Cantabrian mountains</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-sm text-eco-300">
+                                <i class="fas fa-map-marker-alt mr-1.5"></i>
+                                <span>Cantabria</span>
+                            </div>
+                            <a href="#" class="text-sm font-medium hover:text-eco-300 flex items-center">
+                                Learn <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Species Card 4 -->
+                <div class="species-card bg-gradient-to-b from-deep-700 to-deep-800 rounded-xl overflow-hidden border border-deep-600 hover:border-eco-500">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1599088459840-1d41fdb4955b?q=80&w=1000" alt="Mediterranean Monk Seal" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute bottom-3 right-3 px-2 py-1 rounded-full bg-danger-600/90 text-white text-xs font-bold">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> CRITICAL
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold mb-2">Monk Seal</h3>
+                        <p class="text-gray-300 text-sm mb-4">Rarest seal species with ~50 in Canary Islands waters</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-sm text-eco-300">
+                                <i class="fas fa-map-marker-alt mr-1.5"></i>
+                                <span>Canary Islands</span>
+                            </div>
+                            <a href="#" class="text-sm font-medium hover:text-eco-300 flex items-center">
+                                Learn <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center pt-12">
+                <button class="ripple px-8 py-3 rounded-xl bg-gradient-to-r from-eco-800 to-eco-900 border border-eco-700 text-eco-100 hover:text-white font-medium transition-all duration-300">
+                    View All 26 Species <i class="fas fa-chevron-down ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 px-4 bg-deep-800">
+        <div class="container mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="bg-deep-700/50 backdrop-blur-sm p-8 rounded-xl border border-deep-600">
+                    <div class="text-5xl font-bold mb-2 text-eco-300">24</div>
+                    <h3 class="text-lg font-medium">Endangered Species</h3>
+                </div>
+                
+                <div class="bg-deep-700/50 backdrop-blur-sm p-8 rounded-xl border border-deep-600">
+                    <div class="text-5xl font-bold mb-2 text-eco-300">12</div>
+                    <h3 class="text-lg font-medium">Protected Areas</h3>
+                </div>
+                
+                <div class="bg-deep-700/50 backdrop-blur-sm p-8 rounded-xl border border-deep-600">
+                    <div class="text-5xl font-bold mb-2 text-eco-300">86%</div>
+                    <h3 class="text-lg font-medium">Recovery Success</h3>
+                </div>
+                
+                <div class="bg-deep-700/50 backdrop-blur-sm p-8 rounded-xl border border-deep-600">
+                    <div class="text-5xl font-bold mb-2 text-eco-300">3M+</div>
+                    <h3 class="text-lg font-medium">Players Worldwide</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 bg-gradient-to-b from-deep-700 to-deep-900">
+        <div class="container mx-auto max-w-3xl text-center">
+            <div class="inline-flex items-center px-4 py-2 rounded-full backdrop-blur-sm bg-eco-800/50 mb-6">
+                <i class="fas fa-hands-helping text-eco-300 mr-2"></i>
+                <span>Become a Guardian</span>
+            </div>
+            
+            <h2 class="text-4xl font-bold mb-4">Ready to Protect Spain's Wildlife?</h2>
+            <p class="text-lg text-eco-100 mb-8">
+                Join thousands of players contributing to real conservation efforts through immersive gameplay
+            </p>
+            
+            <button onclick="startGame()" class="ripple px-10 py-4 rounded-xl bg-gradient-to-r from-eco-400 to-eco-600 hover:from-eco-500 hover:to-eco-700 text-white font-bold text-lg hover:shadow-xl hover:shadow-eco-500/30 transition-all duration-300">
+                Start Protecting Now <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-deep-900 py-12 px-4 border-t border-deep-800">
+        <div class="container mx-auto">
+            <div class="grid md:grid-cols-5 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-eco-600 flex items-center justify-center text-white mr-3">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <span class="text-xl font-bold">EcoDefender</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6">
+                        An educational initiative transforming wildlife conservation into engaging experiences.
+                        Partnered with Spain's Ministry of Ecological Transition.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-xl bg-deep-800 hover:bg-deep-700 text-gray-400 hover:text-eco-300 flex items-center justify-center transition-colors duration-300">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-xl bg-deep-800 hover:bg-deep-700 text-gray-400 hover:text-eco-300 flex items-center justify-center transition-colors duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-xl bg-deep-800 hover:bg-deep-700 text-gray-400 hover:text-eco-300 flex items-center justify-center transition-colors duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-xl bg-deep-800 hover:bg-deep-700 text-gray-400 hover:text-eco-300 flex items-center justify-center transition-colors duration-300">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Game</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">How It Works</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Species Explorer</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Habitats Map</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Achievements</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Learn</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Conservation Status</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Ecosystem Threats</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Protection Efforts</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Research Papers</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Volunteer</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Donate</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Partnerships</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-eco-300 transition-colors duration-300">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-deep-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <div class="mb-4 md:mb-0">
+                    © 2024 EcoDefender. All conservation efforts in partnership with the Spanish government.
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-eco-300 transition-colors duration-300">Privacy</a>
+                    <a href="#" class="hover:text-eco-300 transition-colors duration-300">Terms</a>
+                    <a href="#" class="hover:text-eco-300 transition-colors duration-300">Accessibility</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Game Overlay -->
+    <div id="game-overlay" class="fixed inset-0 bg-deep-900/95 backdrop-blur-md z-50 hidden overflow-y-auto">
+        <div class="min-h-screen flex flex-col">
+            <!-- Game Header -->
+            <header class="bg-gradient-to-r from-eco-800 to-eco-900 py-5 px-6 border-b border-eco-700">
+                <div class="container mx-auto flex justify-between items-center">
+                    <div class="flex items-center space-x-4">
+                        <button id="exit-game" class="text-gray-300 hover:text-white text-xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-eco-700/50 transition-colors duration-300">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <h2 class="text-xl font-bold text-white">EcoDefender Mission</h2>
+                    </div>
+                    
+                    <div class="flex items-center space-x-6">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-lg bg-eco-800/50 border border-eco-700 flex items-center justify-center text-yellow-200">
+                                <i class="fas fa-coins text-sm"></i>
+                            </div>
+                            <span id="score-display" class="font-bold">0</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-lg bg-eco-800/50 border border-eco-700 flex items-center justify-center text-eco-300">
+                                <i class="fas fa-level-up-alt text-sm"></i>
+                            </div>
+                            <span id="level-display" class="font-bold">1</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Game Content -->
+            <main class="flex-grow container mx-auto p-6">
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Species Card -->
+                    <div class="lg:col-span-2 bg-gradient-to-b from-deep-800 to-deep-900 rounded-xl overflow-hidden border border-eco-700/50 shadow-xl">
+                        <div class="p-6">
+                            <div class="flex flex-col md:flex-row gap-6">
+                                <div class="md:w-1/3">
+                                    <div class="relative">
+                                        <img id="species-image" src="https://images.unsplash.com/photo-1575550959106-5a7defe8b51c?q=80&w=1000" alt="Species" class="w-full h-auto object-cover rounded-xl border-2 border-eco-500/50">
+                                        <div id="conservation-status" class="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-danger-600/90 text-white text-xs font-semibold">
+                                            CRITICAL
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4 bg-eco-900/30 rounded-lg p-3">
+                                        <h4 class="text-xs font-bold text-eco-300 uppercase mb-2">Quick Facts</h4>
+                                        <div class="grid grid-cols-2 gap-2 text-sm">
+                                            <div>
+                                                <div class="text-gray-400">Habitat</div>
+                                                <div id="habitat-type" class="font-medium">Mediterranean forest</div>
+                                            </div>
+                                            <div>
+                                                <div class="text-gray-400">Population</div>
+                                                <div id="population-count" class="font-medium">~400</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="md:w-2/3">
+                                    <div class="flex flex-wrap justify-between items-start mb-3">
+                                        <h3 id="species-name" class="text-2xl font-bold text-white">Iberian Lynx</h3>
+                                        <div id="level-badge" class="px-2 py-1 rounded-full bg-eco-800/50 border border-eco-700 text-xs font-bold text-eco-300">Level 1</div>
+                                    </div>
+                                    
+                                    <p id="species-description" class="text-gray-300 mb-4">
+                                        The world's most endangered feline species, with distinctive leopard-like spotted fur and black ear tufts. Native to southwestern Spain, particularly in the Doñana and Sierra Morena regions.
+                                    </p>
+                                    
+                                    <div class="bg-gradient-to-r from-eco-900/50 to-transparent border-l-4 border-eco-500 rounded-r-lg p-3 mb-4">
+                                        <h4 class="text-sm font-bold text-eco-300 uppercase mb-1 flex items-center">
+                                            <i class="fas fa-exclamation-triangle mr-2"></i> Critical Threats
+                                        </h4>
+                                        <p id="threats-text" class="text-sm text-gray-300">
+                                            Habitat loss due to agriculture and urban development, reduction in rabbit populations (their main prey), road accidents, and illegal hunting. Climate change is exacerbating these threats.
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="bg-gradient-to-r from-eco-900/50 to-transparent border-l-4 border-eco-500 rounded-r-lg p-3">
+                                        <h4 class="text-sm font-bold text-eco-300 uppercase mb-1 flex items-center">
+                                            <i class="fas fa-shield-alt mr-2"></i> Protection Efforts
+                                        </h4>
+                                        <p id="protection-text" class="text-sm text-gray-300">
+                                            Captive breeding programs, rabbit population restoration, wildlife corridors, and road mortality reduction initiatives supported by EU LIFE program funding.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Game Panel -->
+                    <div class="space-y-6">
+                        <!-- Progress -->
+                        <div class="bg-gradient-to-b from-deep-800 to-deep-900 rounded-xl p-5 border border-eco-700/50 shadow-xl">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold text-lg">Mission Progress</h3>
+                                <div class="text-sm text-gray-400">20% Complete</div>
+                            </div>
+                            <div class="bg-deep-700 rounded-full h-2.5 mb-4">
+                                <div id="progress-bar" class="bg-gradient-to-r from-eco-400 to-eco-600 h-2.5 rounded-full" style="width: 20%"></div>
+                            </div>
+                            <p class="text-sm text-gray-300">
+                                Identify all critical habitats to complete this conservation mission.
+                            </p>
+                        </div>
+                        
+                        <!-- Map Container -->
+                        <div class="bg-gradient-to-b from-deep-800 to-deep-900 rounded-xl p-5 border border-eco-700/50 shadow-xl">
+                            <h3 class="font-bold text-lg mb-4 text-center">Spain Habitats Map</h3>
+                            
+                            <div id="spain-map" class="map-container relative w-full h-64 rounded-lg border border-deep-700 mb-4">
+                                <!-- Interactive regions will be added here by JavaScript -->
+                            </div>
+                            
+                            <div id="feedback-message" class="h-8 text-center text-sm font-medium flex items-center justify-center">
+                                <span>Find where this species lives in Spain</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Controls -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <button id="hint-btn" class="ripple bg-eco-800/50 hover:bg-eco-700/70 text-eco-100 px-4 py-3 rounded-lg transition-all duration-300 border border-eco-700 flex items-center justify-center text-sm font-medium">
+                                <i class="fas fa-lightbulb mr-2"></i> Hint (-3)
+                            </button>
+                            <button id="next-species" class="ripple bg-eco-600 hover:bg-eco-700 text-white font-semibold rounded-lg transition-all duration-300 hidden">
+                                Next <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Game variables
+        let score = 0;
+        let currentLevel = 1;
+        let currentSpecies = {};
+        let correctRegions = [];
+        let progress = 0;
+        
+        // Enhanced species data with additional fields
+        const speciesData = [
+            {
+                name: "Iberian Lynx",
+                description: "World's most endangered feline species, with distinctive leopard-like spotted fur and black ear tufts. Native to southwestern Spain, particularly in the Doñana and Sierra Morena regions.",
+                regions: ["andalusia"],
+                conservation: "CRITICAL",
+                threats: "Habitat loss due to agriculture and urban development, reduction in rabbit populations (their main prey), road accidents, and illegal hunting. Climate change is exacerbating these threats.",
+                protection: "Captive breeding programs, rabbit population restoration, wildlife corridors, and road mortality reduction initiatives supported by EU LIFE program funding.",
+                habitatType: "Mediterranean forest",
+                population: "~400",
+                image: "https://images.unsplash.com/photo-1575550959106-5a7defe8b51c?q=80&w=1000",
+                color: "danger"
+            },
+            {
+                name: "Spanish Imperial Eagle",
+                description: "Endemic raptor with striking plumage that depends heavily on rabbit populations. One of the rarest raptors in the world with only about 800 breeding pairs remaining.",
+                regions: ["extremadura", "castile-la_mancha"],
+                conservation: "ENDANGERED",
+                threats: "Electrocution from power lines, poisoning (both accidental and intentional), habitat loss, and declining rabbit populations due to disease outbreaks.",
+                protection: "Power line modification projects, anti-poisoning campaigns, habitat restoration, and supplementary feeding during rabbit population crashes.",
+                habitatType: "Mediterranean woodland",
+                population: "~800 pairs",
+                image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?q=80&w=1000",
+                color: "warning"
+            },
+            {
+                name: "Cantabrian Brown Bear",
+                description: "Genetically unique population of Eurasian brown bears in northern Spain. Smaller than their northern European counterparts with distinctive pale markings.",
+                regions: ["cantabria", "asturias"],
+                conservation: "VULNERABLE",
+                threats: "Habitat fragmentation, poaching, human-wildlife conflict, climate change reducing food availability, and habitat loss to development.",
+                protection: "Corridor creation between subpopulations, bear-proof waste management, compensation for livestock losses, and public education programs.",
+                habitatType: "Mountainous forest",
+                population: "~330",
+                image: "https://images.unsplash.com/photo-1574085975024-eaa85ec28107?q=80&w=1000",
+                color: "warning"
+            },
+            {
+                name: "Mediterranean Monk Seal",
+                description: "One of the rarest seal species in the world and the only one adapted to warmer climates. Small population around the Canary Islands and Mediterranean coast.",
+                regions: ["canary_islands"],
+                conservation: "CRITICAL",
+                threats: "Disturbance from tourism and fishing, entanglement in fishing gear, habitat degradation, pollution, and historical hunting pressure.",
+                protection: "Marine protected areas, fishing regulation enforcement, cave protection initiatives, and public awareness campaigns about seal-safe behaviors.",
+                habitatType: "Coastal caves",
+                population: "~700 total",
+                image: "https://images.unsplash.com/photo-1599088459840-1d41fdb4955b?q=80&w=1000",
+                color: "danger"
+            },
+            {
+                name: "Iberian Wolf",
+                description: "Distinct subspecies of grey wolf found north of the Douro river. Smaller than northern European wolves with reddish tones to their fur.",
+                regions: ["castile_and_leon"],
+                conservation: "NEAR THREATENED",
+                threats: "Poaching and illegal hunting, habitat loss and fragmentation, human-wolf conflicts, and declining traditional livestock practices.",
+                protection: "Compensation programs for livestock losses, public education about wolf ecology, habitat connectivity projects, and legal protections.",
+                habitatType: "Mixed forest",
+                population: "~2,500",
+                image: "https://images.unsplash.com/photo-1503370039968-b37669ad8175?q=80&w=1000",
+                color: "eco"
+            },
+            {
+                name: "Audouin's Gull",
+                description: "Mediterranean endemic gull with over 90% of world population nesting in Spain's coastal areas. Distinctive red bill with black tip.",
+                regions: ["valencia", "balearic_islands"],
+                conservation: "VULNERABLE",
+                threats: "Predation by invasive species, bycatch in fishing operations, disturbance at breeding sites, and marine pollution.",
+                protection: "Predator control programs, fishing regulation enforcement, protected breeding colonies, and habitat restoration projects.",
+                habitatType: "Coastal islands",
+                population: "~21,000 pairs",
+                image: "https://images.unsplash.com/photo-1516483638261-f4db236047e1?q=80&w=1000",
+                color: "warning"
+            }
+        ];
+        
+        // DOM elements
+        const gameOverlay = document.getElementById('game-overlay');
+        const scoreDisplay = document.getElementById('score-display');
+        const levelDisplay = document.getElementById('level-display');
+        const speciesName = document.getElementById('species-name');
+        const speciesImage = document.getElementById('species-image');
+        const speciesDescription = document.getElementById('species-description');
+        const conservationStatus = document.getElementById('conservation-status');
+        const threatsText = document.getElementById('threats-text');
+        const protectionText = document.getElementById('protection-text');
+        const habitatType = document.getElementById('habitat-type');
+        const populationCount = document.getElementById('population-count');
+        const spainMap = document.getElementById('spain-map');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const hintBtn = document.getElementById('hint-btn');
+        const nextSpeciesBtn = document.getElementById('next-species');
+        const exitGameBtn = document.getElementById('exit-game');
+        const progressBar = document.getElementById('progress-bar');
+        const levelBadge = document.getElementById('level-badge');
+        
+        // Start game function
+        function startGame() {
+            gameOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            score = 0;
+            currentLevel = 1;
+            progress = 0;
+            updateScore();
+            loadSpecies();
+        }
+        
+        // Load species data
+        function loadSpecies() {
+            const randomIndex = Math.floor(Math.random() * speciesData.length);
+            currentSpecies = speciesData[randomIndex];
+            correctRegions = currentSpecies.regions;
+            
+            // Update UI with species info
+            speciesName.textContent = currentSpecies.name;
+            speciesImage.src = currentSpecies.image;
+            speciesDescription.textContent = currentSpecies.description;
+            threatsText.textContent = currentSpecies.threats;
+            protectionText.textContent = currentSpecies.protection;
+            habitatType.textContent = currentSpecies.habitatType;
+            populationCount.textContent = currentSpecies.population;
+            
+            // Update conservation status
+            conservationStatus.textContent = currentSpecies.conservation;
+            
+            // Reset status color classes
+            conservationStatus.className = "absolute bottom-3 right-3 px-3 py-1 rounded-full text-xs font-semibold";
+            
+            // Add appropriate color class
+            switch(currentSpecies.color) {
+                case "danger":
+                    conservationStatus.classList.add('bg-danger-600/90', 'text-white');
+                    break;
+                case "warning":
+                    conservationStatus.classList.add('bg-warning-600/90', 'text-white');
+                    break;
+                default:
+                    conservationStatus.classList.add('bg-eco-600/90', 'text-white');
+            }
+            
+            // Update level badge color
+            const levelColors = [
+                "bg-eco-800/50 text-eco-300",
+                "bg-blue-800/50 text-blue-300",
+                "bg-purple-800/50 text-purple-300"
+            ];
+            levelBadge.className = "px-2 py-1 rounded-full bg-eco-800/50 border border-eco-700 text-xs font-bold text-eco-300";
+            levelBadge.textContent = `Level ${currentLevel}`;
+            
+            // Create interactive map
+            createMapRegions();
+            
+            // Reset UI elements
+            feedbackMessage.innerHTML = '<span>Find where this species lives in Spain</span>';
+            feedbackMessage.className = "h-8 text-center text-sm font-medium flex items-center justify-center text-gray-300";
+            nextSpeciesBtn.classList.add('hidden');
+            
+            // Update progress bar
+            updateProgressBar();
+        }
+        
+        // Create interactive map regions
+        function createMapRegions() {
+            spainMap.innerHTML = '';
+            
+            // Spain regions data for the game
+            const regions = [
+                {id: "andalusia", name: "Andalusia", left: "65%", top: "78%"},
+                {id: "cantabria", name: "Cantabria", left: "20%", top: "10%"},
+                {id: "asturias", name: "Asturias", left: "15%", top: "8%"},
+                {id: "aragon", name: "Aragon", left: "45%", top: "20%"},
+                {id: "castile_and_leon", name: "Castile and León", left: "30%", top: "25%"},
+                {id: "extremadura", name: "Extremadura", left: "20%", top: "60%"},
+                {id: "castile-la_mancha", name: "Castile-La Mancha", left: "45%", top: "50%"},
+                {id: "valencia", name: "Valencia", left: "60%", top: "55%"},
+                {id: "balearic_islands", name: "Balearic Islands", left: "80%", top: "50%"},
+                {id: "canary_islands", name: "Canary Islands", left: "10%", top: "90%"}
+            ];
+            
+            regions.forEach(region => {
+                const regionElement = document.createElement('div');
+                regionElement.className = 'absolute w-8 h-8 rounded-full habitat-dot cursor-pointer transition-all duration-300 hover:scale-125';
+                regionElement.style.left = region.left;
+                regionElement.style.top = region.top;
+                regionElement.style.backgroundColor = 'rgba(20, 184, 166, 0.5)';
+                regionElement.dataset.id = region.id;
+                regionElement.dataset.name = region.name;
+                
+                // Add ripple effect on click
+                regionElement.addEventListener('click', function(e) {
+                    // Remove previous ripples
+                    const prevRipples = this.querySelectorAll('.ripple-effect');
+                    prevRipples.forEach(ripple => ripple.remove());
+                    
+                    // Create ripple
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple-effect';
+                    
+                    // Position ripple
+                    const rect = this.getBoundingClientRect();
+                    ripple.style.left = (e.clientX - rect.left) + 'px';
+                    ripple.style.top = (e.clientY - rect.top) + 'px';
+                    
+                    this.appendChild(ripple);
+                    
+                    // Handle region click logic
+                    handleRegionClick(e);
+                });
+                
+                regionElement.addEventListener('mouseenter', () => {
+                    regionElement.style.boxShadow = '0 0 0 6px rgba(16, 185, 129, 0.4)';
+                });
+                
+                regionElement.addEventListener('mouseleave', () => {
+                    regionElement.style.boxShadow = '0 0 0 4px rgba(16, 185, 129, 0.3)';
+                });
+                
+                spainMap.appendChild(regionElement);
+            });
+        }
+        
+        // Handle region click
+        function handleRegionClick(e) {
+            if (nextSpeciesBtn.classList.contains('hidden') === false) return;
+            
+            const regionId = e.target.dataset.id;
+            const regionName = e.target.dataset.name;
+            const regionElement = e.target;
+            
+            if (correctRegions.includes(regionId)) {
+                // Correct region selected
+                regionElement.style.backgroundColor = 'rgba(16, 185, 129, 0.8)';
+                regionElement.style.boxShadow = '0 0 0 6px rgba(16, 185, 129, 0.6)';
+                score += 10;
+                progress += 20;
+                
+                feedbackMessage.innerHTML = `<div class="flex items-center justify-center gap-2"><i class="fas fa-check-circle text-eco-300"></i> <span>Correct! ${regionName} is a protected habitat for ${currentSpecies.name}. +10 points</span></div>`;
+                feedbackMessage.className = "h-8 text-center text-sm font-medium flex items-center justify-center text-eco-300";
+                
+                // Check if all correct regions found
+                const correctFound = Array.from(spainMap.children).filter(child => 
+                    correctRegions.includes(child.dataset.id) && 
+                    child.style.backgroundColor === 'rgba(16, 185, 129, 0.8)'
+                ).length;
+                
+                if (correctFound === correctRegions.length) {
+                    feedbackMessage.innerHTML = `<div class="flex items-center justify-center gap-2"><i class="fas fa-trophy text-yellow-300"></i> <span>All habitats protected! Mission complete!</span></div>`;
+                    feedbackMessage.className = "h-8 text-center text-sm font-medium flex items-center justify-center text-yellow-300";
+                    nextSpeciesBtn.classList.remove('hidden');
+                    progress = 100;
+                }
+            } else {
+                // Incorrect region selected
+                regionElement.style.backgroundColor = 'rgba(239, 68, 68, 0.6)';
+                regionElement.style.boxShadow = '0 0 0 6px rgba(239, 68, 68, 0.4)';
+                score = Math.max(0, score - 5);
+                
+                feedbackMessage.innerHTML = `<div class="flex items-center justify-center gap-2"><i class="fas fa-times-circle text-danger-400"></i> <span>Not a primary habitat for ${currentSpecies.name}. -5 points</span></div>`;
+                feedbackMessage.className = "h-8 text-center text-sm font-medium flex items-center justify-center text-danger-400";
+            }
+            
+            updateScore();
+            updateProgressBar();
+        }
+        
+        // Update score display
+        function updateScore() {
+            scoreDisplay.textContent = score;
+            levelDisplay.textContent = currentLevel;
+        }
+        
+        // Update progress bar
+        function updateProgressBar() {
+            progressBar.style.width = `${Math.min(100, progress)}%`;
+            
+            // Level up logic
+            if (progress >= 100 && currentLevel < 3) {
+                setTimeout(() => {
+                    currentLevel++;
+                    progress = 0;
+                    levelDisplay.textContent = currentLevel;
+                    levelBadge.textContent = `Level ${currentLevel}`;
+                    
+                    feedbackMessage.innerHTML = `<div class="flex items-center justify-center gap-2"><i class="fas fa-medal text-yellow-300"></i> <span>Level ${currentLevel-1} complete! Advancing to Level ${currentLevel}</span></div>`;
+                    feedbackMessage.className = "h-8 text-center text-sm font-medium flex items-center justify-center text-yellow-300";
+                    
+                    updateProgressBar();
+                    loadSpecies();
+                }, 2000);
+            } else if (progress >= 100 && currentLevel === 3) {
+                feedbackMessage.innerHTML = `<div class="flex items-center justify-center gap-2"><i class="fas fa-award text-yellow-300"></i> <span>Conservation Master! You've completed all levels!</span></div>`;
+                feedbackMessage.className = "h-8 text-center text-sm font-medium flex items-center justify-center text-yellow-300";
+            }
+        }
+        
+        // Add ripple effect to buttons
+        document.querySelectorAll('.ripple').forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Remove previous ripples
+                const prevRipples = this.querySelectorAll('.ripple-effect');
+                prevRipples.forEach(ripple => ripple.remove());
+                
+                // Create ripple
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple-effect';
+                
+                // Position ripple
+                const rect = this.getBoundingClientRect();
+                ripple.style.left = (e.clientX - rect.left) + 'px';
+                ripple.style.top = (e.clientY - rect.top) + 'px';
+                
+                this.appendChild(ripple);
+            });
+        });
+        
+        // Hint button functionality
+        hintBtn.addEventListener('click', () => {
+            if (score >= 3) {
+                score -= 3;
+                const randomRegion = correctRegions[Math.floor(Math.random() * correctRegions.length)];
+                const regionElement = document.querySelector(`[data-id="${randomRegion}"]`);
+                
+                if (regionElement) {
+                    const regionName = regionElement.dataset.name;
+                    
+                    // Pulsing animation for hint
+                    regionElement.style.animation = 'pulse 1.5s infinite';
+                    feedbackMessage.innerHTML = `<div class="flex items-center justify-center gap-2"><i class="fas fa-lightbulb text-blue-300"></i> <span>Look at ${regionName} (-3 points)</span></div>`;
+                    feedbackMessage.className = "h-8 text-center text-sm font-medium flex items-center justify-center text-blue-300";
+                    
+                    setTimeout(() => {
+                        regionElement.style.animation = '';
+                    }, 3000);
+                }
+                
+                updateScore();
+            } else {
+                feedbackMessage.innerHTML = `<div class="flex items-center justify-center gap-2"><i class="fas fa-exclamation-circle text-danger-400"></i> <span>Need 3 points for a hint!</span></div>`;
+                feedbackMessage.className = "h-8 text-center text-sm font-medium flex items-center justify-center text-danger-400";
+            }
+        });
+        
+        // Next species button
+        nextSpeciesBtn.addEventListener('click', () => {
+            loadSpecies();
+        });
+        
+        // Exit game button
+        exitGameBtn.addEventListener('click', () => {
+            gameOverlay.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Make startGame available globally
+        window.startGame = startGame;
+    </script>
+</body>
+</html>
